@@ -22,11 +22,6 @@ exports.getTxs = async () => {
 
 exports.makeTx  = async (fromAddress, toAddress, amount) => {
   try {
-    console.log({
-      fromAddress,
-      toAddress,
-      amount
-    })
     const tx = await axios.post(API_TRANSACTIONS_URL, {
       fromAddress,
       toAddress,
