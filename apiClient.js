@@ -19,3 +19,38 @@ exports.getTxs = async () => {
     console.log(err)
   }
 }
+
+exports.makeTx  = async (fromAddress, toAddress, amount) => {
+  try {
+    console.log({
+      fromAddress,
+      toAddress,
+      amount
+    })
+    const tx = await axios.post(API_TRANSACTIONS_URL, {
+      fromAddress,
+      toAddress,
+      amount
+    })
+
+    console.log('NEW TRANSACTION')
+    console.log(tx)
+
+    return
+  } catch (err) {
+    console.log('ERROR')
+    console.log(err)
+  }
+}
+
+exports.getAddressInfo = async (address) => {
+  try {
+    const addressInfo = await axios.get(`${API_ADDRESS_URL}/${address}`)
+    console.log('ADDRESS INFO')
+    console.log(addressInfo.data)
+    return addressInfo
+  } catch (err) {
+    console.log('ERROR')
+    console.log(err)
+  }
+}
