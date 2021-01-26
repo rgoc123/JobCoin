@@ -47,7 +47,7 @@ describe('Verifies original fromAddress', () => {
 
 const nonNumber = '4asdf22349'
 const insufficientAmt = '15'
-const validAmount = '8'
+const validAmount = '8.5'
 
 describe('Verifies amount to send', () => {
   test('Produces error for non-number', () => {

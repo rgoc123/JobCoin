@@ -23,7 +23,10 @@ exports.verifyOriginalFromAddr = (addressInfo) => {
 }
 
 exports.verifyAmount = (amount, addressInfo) => {
-  if (isNaN(parseFloat(amount))) {
+  const parsedAmt = parseFloat(amount)
+  const revertParsedCheck = parsedAmt.toString().length === amount.length
+
+  if (!revertParsedCheck || isNaN(parsedAmt)) {
     return { successful: false, message: 'The amount you entered is not a valid number' }
   } else if (parseFloat(addressInfo.balance) < parseFloat(amount)) {
     return { successful: false, message: 'You don\'t have enough funds to transfer that amount' }
