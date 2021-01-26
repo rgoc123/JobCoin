@@ -19,7 +19,7 @@ const createRandomAmounts = (amount, addressesArray) => {
 
   // Make sure subAmounts length is at least num addresses
   if (subAmounts.length < numAddresses) {
-    console.log('splitting')
+    // console.log('splitting')
     while (subAmounts.length < numAddresses) {
       for (let idx in subAmounts) {
         const subAmount = subAmounts[idx]
@@ -35,12 +35,14 @@ const createRandomAmounts = (amount, addressesArray) => {
       }
     }
   }
-  
-  console.log('FINAL SUBAMOUNTS')
-  console.log(subAmounts)
+
+  // console.log('FINAL SUBAMOUNTS')
+  // console.log(subAmounts)
 
   return subAmounts
 }
+
+exports.createRandomAmounts = createRandomAmounts
 
 const distribute = (subAmounts, addressesArray) => {
   for (let idx in subAmounts) {

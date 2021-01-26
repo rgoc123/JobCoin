@@ -1,0 +1,16 @@
+{
+  "name": "jobcoin",
+  "version": "1.0.0",
+  "description": "Gemini coin mixer challenge",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "author": "Robert O'Connor",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.21.1",
+    "jest": "^26.6.3",
+    "node-fetch": "^2.6.1"
+  }
+}
