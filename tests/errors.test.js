@@ -1,5 +1,6 @@
 const {
-  verifyOriginalFromAddr
+  verifyOriginalFromAddr,
+  verifyAmount
 } = require('../jobcoin/utils.js')
 
 const addressNonExisting = { balance: '0', transactions: [] }
@@ -41,5 +42,29 @@ describe('Verifies original fromAddress', () => {
     const originalFromAddrCheck = verifyOriginalFromAddr(goodAddress)
 
     expect(originalFromAddrCheck.successful).toBe(true)
+  })
+})
+
+const nonNumber = '4asdf22349'
+const insufficientAmt = '15'
+const validAmount = '8'
+
+describe('Verifies amount to send', () => {
+  test('Produces error for non-number', () => {
+    const amountCheck = verifyAmount(nonNumber, goodAddress)
+
+    expect(amountCheck.successful).toBe(false)
+  })
+
+  test('Produces error for too high an amount', () => {
+    const amountCheck = verifyAmount(insufficientAmt, goodAddress)
+
+    expect(amountCheck.successful).toBe(false)
+  })
+
+  test('Is successful for valid amount', () => {
+    const amountCheck = verifyAmount(validAmount, goodAddress)
+
+    expect(amountCheck.successful).toBe(true)
   })
 })

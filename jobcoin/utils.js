@@ -14,9 +14,19 @@ exports.generateDepositAddress = () => {
 
 exports.verifyOriginalFromAddr = (addressInfo) => {
   if (addressInfo && addressInfo.transactions.length === 0) {
-    return { successful: false, message: 'The address you provided isn\'t valid'}
+    return { successful: false, message: 'The address you provided isn\'t valid' }
   } else if (addressInfo && addressInfo.balance === '0') {
-    return { successful: false, message: 'The address you want to send from has 0 coins'}
+    return { successful: false, message: 'The address you want to send from has 0 coins' }
+  } else {
+    return { successful: true }
+  }
+}
+
+exports.verifyAmount = (amount, addressInfo) => {
+  if (isNaN(parseFloat(amount))) {
+    return { successful: false, message: 'The amount you entered is not a valid number' }
+  } else if (parseFloat(addressInfo.balance) < parseFloat(amount)) {
+    return { successful: false, message: 'You don\'t have enough funds to transfer that amount' }
   } else {
     return { successful: true }
   }
