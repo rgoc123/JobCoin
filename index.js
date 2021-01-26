@@ -4,6 +4,7 @@ const mixer = require('./jobcoin/mixer.js')
 const {
   generateDepositAddress,
   verifyOriginalFromAddr,
+  verifyToAddrsNewUnused,
   verifyAmount
 } = require('./jobcoin/utils.js')
 
@@ -25,23 +26,18 @@ const askCoinAmount = (addresses, originalFromAddr, addressInfo) => {
       // Send coin amount to deposit address
       await apiClient.makeTx(originalFromAddr, depositAddress, amount)
 
-
       // Get coins from depost address, send to house
       const addressInfo = await apiClient.getAddressInfo(depositAddress)
       const addressBalance = addressInfo.balance
 
-      if (addressBalance) {
-        await apiClient.makeTx(depositAddress, HOUSE_ADDRESS, addressBalance)
 
-        // Mix and distribute
-        await mixer.mixAndDistribute(addresses, addressBalance)
+      await apiClient.makeTx(depositAddress, HOUSE_ADDRESS, addressBalance)
 
-        // Finish transaction
-        console.log('Transfer complete')
-      } else {
-        console.log('Fail')
-      }
-      
+      // Mix and distribute
+      await mixer.mixAndDistribute(addresses, addressBalance)
+
+      // Finish transaction
+      console.log('Transfer complete')
       readline.close()
     } else {
       console.log(`${amountCheck.message}. Please try another amount.`)
@@ -50,9 +46,17 @@ const askCoinAmount = (addresses, originalFromAddr, addressInfo) => {
   })
 }
 
-const askAddresses = (originalFromAddr, addressInfo) => {
+const askAddresses = async (originalFromAddr, addressInfo) => {
   readline.question('Please enter a comma-separated list of new, unused Jobcoin addresses where your mixed Jobcoins will be sent: ', async (addresses) => {
-    askCoinAmount(addresses, originalFromAddr, addressInfo)
+
+    const toAddrsNewUnusedCheck = await verifyToAddrsNewUnused(addresses)
+    if (toAddrsNewUnusedCheck.successful) {
+      askCoinAmount(addresses, originalFromAddr, addressInfo)
+    } else {
+      console.log(toAddrsNewUnusedCheck.message)
+      console.log(toAddrsNewUnusedCheck.data)
+      askAddresses(originalFromAddr, addressInfo)
+    }
   })
 }
 

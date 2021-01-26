@@ -22,6 +22,32 @@ exports.verifyOriginalFromAddr = (addressInfo) => {
   }
 }
 
+const findBadAddresses = async (addressesArray) => {
+  const badAddresses = []
+
+  for (let i = 0; i < addressesArray.length; i++) {
+    const addr = addressesArray[i]
+    const addressInfo = await getAddressInfo(addr)
+
+    if (!(addressInfo.balance === '0') || !(addressInfo.transactions.length === 0)) {
+      badAddresses.push(addr)
+    }
+  }
+
+  return badAddresses
+}
+
+exports.verifyToAddrsNewUnused = async (addresses) => {
+  const addressesArray = addresses.split(',')
+
+  const badAddresses = await findBadAddresses(addressesArray)
+  if (badAddresses.length > 0) {
+    return { successful: false, data: badAddresses, message: 'The following addresses are not new and unused. Please select different addresses.' }
+  } else {
+    return { successful: true }
+  }
+}
+
 exports.verifyAmount = (amount, addressInfo) => {
   const parsedAmt = parseFloat(amount)
   const revertParsedCheck = parsedAmt.toString().length === amount.length
