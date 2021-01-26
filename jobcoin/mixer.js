@@ -1,3 +1,7 @@
+const apiClient = require('./apiClient.js')
+
+const { HOUSE_ADDRESS } = require('./config.js')
+
 const createRandomAmounts = (amount, addressesArray) => {
   const subAmounts = []
 
@@ -53,7 +57,7 @@ const distribute = async (subAmounts, addressesArray) => {
     const subAmount = subAmounts[idx]
     // Create random time anywhere between 1 and 10 seconds
     const randomTimeInterval = Math.floor(Math.random() * 10 + 1)
-    
+
     let toAddress
     if (idx < addressesArray.length) { // Make sure each addr gets one subAmount
       toAddress = addressesArray[idx]
@@ -63,17 +67,17 @@ const distribute = async (subAmounts, addressesArray) => {
     }
 
     await delay(randomTimeInterval)
-
-    // apiClient.makeTx('HOUSE', toAddress, subAmount)
+    console.log(`Transferring ${subAmount} coins to address ${toAddress}`)
+    apiClient.makeTx(HOUSE_ADDRESS, toAddress, subAmount)
   }
 }
 
-exports.mixAndDistribute = (addresses, amount) => {
+exports.mixAndDistribute = async (addresses, amount) => {
   // TODO: Restore below
-  // const addressesArray = addresses.split(',')
-  const addressesArray = ['1', '2', '3', '4', '5']
+  const addressesArray = addresses.split(',')
+  console.log(addressesArray)
 
   const subAmounts = createRandomAmounts(amount, addressesArray)
 
-  distribute(subAmounts, addressesArray)
+  await distribute(subAmounts, addressesArray)
 }

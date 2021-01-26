@@ -28,9 +28,6 @@ exports.makeTx  = async (fromAddress, toAddress, amount) => {
       amount
     })
 
-    console.log('NEW TRANSACTION')
-    console.log(tx)
-
     return
   } catch (err) {
     console.log('ERROR')
@@ -41,9 +38,7 @@ exports.makeTx  = async (fromAddress, toAddress, amount) => {
 exports.getAddressInfo = async (address) => {
   try {
     const addressInfo = await axios.get(`${API_ADDRESS_URL}/${address}`)
-    console.log('ADDRESS INFO')
-    console.log(addressInfo.data)
-    return addressInfo
+    return addressInfo.data
   } catch (err) {
     console.log('ERROR')
     console.log(err)

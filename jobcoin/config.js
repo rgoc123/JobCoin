@@ -1,0 +1,1 @@
+exports.HOUSE_ADDRESS = 'HOUSE'

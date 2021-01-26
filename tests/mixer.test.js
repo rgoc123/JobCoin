@@ -5,7 +5,7 @@ const toAddressses = ['a', 'b', 'c', 'd', 'e']
 
 describe('Mixing coins', () => {
   const subAmounts = mixer.createRandomAmounts(givenAmount, toAddressses)
-  
+
   test('Random amounts sum to given amount', () => {
     let sum = 0
     for (let subAmount of subAmounts) {
