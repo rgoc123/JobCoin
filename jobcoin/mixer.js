@@ -1,4 +1,5 @@
-const { makeTx } = require('./apiClient.js')
+const { makeTx, getAddressInfo } = require('./apiClient.js')
+const { generateRandomAddress } = require('./utils.js')
 const { HOUSE_ADDRESS } = require('./config.js')
 
 const createRandomAmounts = (amount, addressesArray) => {
@@ -68,10 +69,26 @@ const distribute = async (subAmounts, addressesArray) => {
   }
 }
 
-exports.mixAndDistribute = async (addresses, amount) => {
+const mixAndDistribute = async (addresses, amount) => {
   const addressesArray = addresses.split(',')
 
   const subAmounts = createRandomAmounts(amount, addressesArray)
 
   await distribute(subAmounts, addressesArray)
+}
+
+exports.despositMixDistribute = async (originalFromAddr, addresses, amount) => {
+  // Get deposit address
+  const depositAddress = generateRandomAddress()
+
+  // Send coin amount to deposit address
+  await makeTx(originalFromAddr, depositAddress, amount)
+
+  // Get coins from depost address, send to house
+  const addressInfo = await getAddressInfo(depositAddress)
+  const addressBalance = addressInfo.balance
+  await makeTx(depositAddress, HOUSE_ADDRESS, addressBalance)
+
+  // Mix and distribute
+  await mixAndDistribute(addresses, addressBalance)
 }

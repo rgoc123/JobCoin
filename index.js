@@ -1,11 +1,11 @@
 const { makeTx, getAddressInfo } = require('./jobcoin/apiClient.js')
-const { mixAndDistribute } = require('./jobcoin/mixer.js')
+const { despositMixDistribute } = require('./jobcoin/mixer.js')
 
 const {
-  generateDepositAddress,
   verifyOriginalFromAddr,
   verifyToAddrsNewUnused,
-  verifyAmount
+  verifyAmount,
+  createDummyTxs
 } = require('./jobcoin/utils.js')
 
 const { HOUSE_ADDRESS } = require('./jobcoin/config.js')
@@ -15,20 +15,15 @@ const readline = require('readline').createInterface({
   output: process.stdout
 })
 
-const despositMixDistribute = async (originalFromAddr, addresses, amount) => {
-  // Get deposit address
-  const depositAddress = generateDepositAddress()
+const askDummyNames = (originalFromAddr, addresses, amount) => {
+  readline.question('Enter your two dummy names separated by a comma: ', async (dummyNames) => {
+    createDummyTxs(dummyNames)
 
-  // Send coin amount to deposit address
-  await makeTx(originalFromAddr, depositAddress, amount)
+    await despositMixDistribute(originalFromAddr, addresses, amount)
 
-  // Get coins from depost address, send to house
-  const addressInfo = await getAddressInfo(depositAddress)
-  const addressBalance = addressInfo.balance
-  await makeTx(depositAddress, HOUSE_ADDRESS, addressBalance)
-
-  // Mix and distribute
-  await mixAndDistribute(addresses, addressBalance)
+    // Finish transaction
+    readline.close()
+  })
 }
 
 const askCoinAmount = (addresses, originalFromAddr, addressInfo) => {
@@ -36,11 +31,7 @@ const askCoinAmount = (addresses, originalFromAddr, addressInfo) => {
 
     const amountCheck = verifyAmount(amount, addressInfo)
     if (amountCheck.successful) {
-      await despositMixDistribute(originalFromAddr, addresses, amount)
-
-      // Finish transaction
-      console.log('Transfer complete')
-      readline.close()
+      askDummyNames(originalFromAddr, addresses, amount)
     } else {
       console.log(`${amountCheck.message}. Please try another amount.`)
       askCoinAmount(addresses, originalFromAddr, addressInfo)

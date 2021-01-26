@@ -2,15 +2,15 @@
 "use strict";
 const crypto = require("crypto");
 
-const { getAddressInfo } = require('./apiClient.js')
+const { getAddressInfo, makeTx } = require('./apiClient.js')
+const mixer = require('./mixer.js')
 
-exports.generateDepositAddress = () => {
-  const hash = crypto.createHash("sha256");
-  return hash
-    .update(`${Date.now()}`)
-    .digest("hex")
-    .substring(0, 8);
+const generateRandomAddress = () => {
+  const randomAddr = crypto.randomBytes(8).toString('hex')
+  return randomAddr
 }
+
+exports.generateRandomAddress = generateRandomAddress
 
 exports.verifyOriginalFromAddr = (addressInfo) => {
   if (addressInfo && addressInfo.transactions.length === 0) {
@@ -59,4 +59,14 @@ exports.verifyAmount = (amount, addressInfo) => {
   } else {
     return { successful: true }
   }
+}
+
+exports.createDummyTxs = async (names) => {
+  const namesArray = names.split(',')
+
+  const dummyAddressesOne = [generateRandomAddress(), generateRandomAddress(), generateRandomAddress()].join()
+  const dummyAddressesTwo = [generateRandomAddress(), generateRandomAddress(), generateRandomAddress()].join()
+
+  mixer.despositMixDistribute(namesArray[0], dummyAddressesOne, 37)
+  mixer.despositMixDistribute(namesArray[1], dummyAddressesTwo, 48)
 }
