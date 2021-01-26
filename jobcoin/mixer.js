@@ -44,12 +44,16 @@ const createRandomAmounts = (amount, addressesArray) => {
 
 exports.createRandomAmounts = createRandomAmounts
 
-const distribute = (subAmounts, addressesArray) => {
+const delay = (time) => {
+  return new Promise(resolve => setTimeout(resolve, time*1000))
+}
+
+const distribute = async (subAmounts, addressesArray) => {
   for (let idx in subAmounts) {
     const subAmount = subAmounts[idx]
-    // Create random time anywhere between 1 and 6 seconds
-    const randomTimeInterval = Math.floor(Math.random() * 5 + 1)
-
+    // Create random time anywhere between 1 and 10 seconds
+    const randomTimeInterval = Math.floor(Math.random() * 10 + 1)
+    
     let toAddress
     if (idx < addressesArray.length) { // Make sure each addr gets one subAmount
       toAddress = addressesArray[idx]
@@ -58,9 +62,9 @@ const distribute = (subAmounts, addressesArray) => {
       toAddress = addressesArray[randomAddressIdx]
     }
 
-    // setTimeout(() => {
-    //   apiClient.makeTx('HOUSE', toAddress, subAmount)
-    // }, randomTimeInterval)
+    await delay(randomTimeInterval)
+
+    // apiClient.makeTx('HOUSE', toAddress, subAmount)
   }
 }
 
