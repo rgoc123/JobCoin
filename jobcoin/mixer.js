@@ -10,7 +10,7 @@ const createRandomAmounts = (amount, addressesArray) => {
 
   // Make intial slices of amount to send
   while (remainingAmount) {
-    if (remainingAmount < 5) {
+    if (remainingAmount < 5) { // If it's already small, no need to split it
       subAmounts.push(remainingAmount)
       remainingAmount = 0
     } else {
@@ -21,9 +21,8 @@ const createRandomAmounts = (amount, addressesArray) => {
     }
   }
 
-  // Make sure subAmounts length is at least num addresses
+  // Create enough subAmounts for each recipient
   if (subAmounts.length < numAddresses) {
-    // console.log('splitting')
     while (subAmounts.length < numAddresses) {
       for (let idx in subAmounts) {
         const subAmount = subAmounts[idx]
@@ -39,9 +38,6 @@ const createRandomAmounts = (amount, addressesArray) => {
       }
     }
   }
-
-  // console.log('FINAL SUBAMOUNTS')
-  // console.log(subAmounts)
 
   return subAmounts
 }
@@ -61,21 +57,20 @@ const distribute = async (subAmounts, addressesArray) => {
     let toAddress
     if (idx < addressesArray.length) { // Make sure each addr gets one subAmount
       toAddress = addressesArray[idx]
-    } else { // Once every addr has gotten a subAmount, randomly distribute
+    } else { // Once every addr has gotten a subAmount, randomly distribute remaining subAmounts
       const randomAddressIdx = Math.floor(Math.random() * addressesArray.length)
       toAddress = addressesArray[randomAddressIdx]
     }
 
     await delay(randomTimeInterval)
+    
     console.log(`Transferring ${subAmount} coins to address ${toAddress}`)
     apiClient.makeTx(HOUSE_ADDRESS, toAddress, subAmount)
   }
 }
 
 exports.mixAndDistribute = async (addresses, amount) => {
-  // TODO: Restore below
   const addressesArray = addresses.split(',')
-  console.log(addressesArray)
 
   const subAmounts = createRandomAmounts(amount, addressesArray)
 

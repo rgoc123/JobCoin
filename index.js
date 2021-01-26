@@ -15,26 +15,28 @@ const readline = require('readline').createInterface({
   output: process.stdout
 })
 
+const despositMixDistribute = async (originalFromAddr, addresses, amount) => {
+  // Get deposit address
+  const depositAddress = generateDepositAddress()
+
+  // Send coin amount to deposit address
+  await apiClient.makeTx(originalFromAddr, depositAddress, amount)
+
+  // Get coins from depost address, send to house
+  const addressInfo = await apiClient.getAddressInfo(depositAddress)
+  const addressBalance = addressInfo.balance
+  await apiClient.makeTx(depositAddress, HOUSE_ADDRESS, addressBalance)
+
+  // Mix and distribute
+  await mixer.mixAndDistribute(addresses, addressBalance)
+}
+
 const askCoinAmount = (addresses, originalFromAddr, addressInfo) => {
   readline.question('How many coins would you like to send? ', async (amount) => {
 
     const amountCheck = verifyAmount(amount, addressInfo)
     if (amountCheck.successful) {
-      // Get deposit address
-      const depositAddress = generateDepositAddress()
-
-      // Send coin amount to deposit address
-      await apiClient.makeTx(originalFromAddr, depositAddress, amount)
-
-      // Get coins from depost address, send to house
-      const addressInfo = await apiClient.getAddressInfo(depositAddress)
-      const addressBalance = addressInfo.balance
-
-
-      await apiClient.makeTx(depositAddress, HOUSE_ADDRESS, addressBalance)
-
-      // Mix and distribute
-      await mixer.mixAndDistribute(addresses, addressBalance)
+      await despositMixDistribute(originalFromAddr, addresses, amount)
 
       // Finish transaction
       console.log('Transfer complete')
@@ -63,8 +65,7 @@ const askAddresses = async (originalFromAddr, addressInfo) => {
 const askFromAddress = () => {
   readline.question('Which account are you sending from? ', async originalFromAddr => {
     const addressInfo = await apiClient.getAddressInfo(originalFromAddr)
-    console.log(addressInfo)
-
+    
     const originalFromAddrCheck = verifyOriginalFromAddr(addressInfo)
     if (originalFromAddrCheck.successful) {
       askAddresses(originalFromAddr, addressInfo)
