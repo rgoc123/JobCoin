@@ -10,15 +10,12 @@ const createRandomAmounts = (amount, addressesArray) => {
 
   // Make intial slices of amount to send
   while (remainingAmount) {
-    if (remainingAmount < 5) { // If it's already small, no need to split it
-      subAmounts.push(remainingAmount)
-      remainingAmount = 0
-    } else {
-      const subAmount = Math.floor(Math.random() * (remainingAmount) + 1)
-      subAmounts.push(subAmount)
+    const upperLimit = remainingAmount < 5 ? remainingAmount : 5
 
-      remainingAmount -= subAmount
-    }
+    const subAmount = Math.floor(Math.random() * (upperLimit) + 1)
+    subAmounts.push(subAmount)
+
+    remainingAmount -= subAmount
   }
 
   // Create enough subAmounts for each recipient
