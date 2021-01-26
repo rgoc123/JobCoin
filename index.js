@@ -9,14 +9,14 @@ const readline = require('readline').createInterface({
   output: process.stdout
 })
 
-const askCoinAmount = (addresses) => {
+const askCoinAmount = (addresses, originalFromAddr) => {
   readline.question('How many coins would you like to send? ', async (amount) => {
     // Get deposit address
     const depositAddress = utils.generateDepositAddress()
 
 
     // Send coin amount to deposit address
-    await apiClient.makeTx('Alex', depositAddress, amount)
+    await apiClient.makeTx(originalFromAddr, depositAddress, amount)
 
 
     // Get coins from depost address, send to house
@@ -40,12 +40,20 @@ const askCoinAmount = (addresses) => {
   })
 }
 
-const askAddresses = () => {
+const askAddresses = (originalFromAddr) => {
   readline.question('Please enter a comma-separated list of new, unused Jobcoin addresses where your mixed Jobcoins will be sent: ', async (addresses) => {
-
-    // Get coin amount
-    askCoinAmount(addresses)
+    askCoinAmount(addresses, originalFromAddr)
   })
 }
 
-askAddresses()
+const askFromAddress = () => {
+  readline.question('Which account are you sending from? ', originalFromAddr => {
+    askAddresses(originalFromAddr)
+  })
+}
+
+const run = () => {
+  askFromAddress()
+}
+
+run()
