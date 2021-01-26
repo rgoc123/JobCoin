@@ -1,6 +1,10 @@
 const apiClient = require('./jobcoin/apiClient.js')
-const utils = require('./jobcoin/utils.js')
 const mixer = require('./jobcoin/mixer.js')
+
+const {
+  generateDepositAddress,
+  verifyOriginalFromAddr
+} = require('./jobcoin/utils.js')
 
 const { HOUSE_ADDRESS } = require('./jobcoin/config.js')
 
@@ -11,9 +15,9 @@ const readline = require('readline').createInterface({
 
 const askCoinAmount = (addresses, originalFromAddr) => {
   readline.question('How many coins would you like to send? ', async (amount) => {
-    // Get deposit address
-    const depositAddress = utils.generateDepositAddress()
 
+    // Get deposit address
+    const depositAddress = generateDepositAddress()
 
     // Send coin amount to deposit address
     await apiClient.makeTx(originalFromAddr, depositAddress, amount)
@@ -47,8 +51,16 @@ const askAddresses = (originalFromAddr) => {
 }
 
 const askFromAddress = () => {
-  readline.question('Which account are you sending from? ', originalFromAddr => {
-    askAddresses(originalFromAddr)
+  readline.question('Which account are you sending from? ', async originalFromAddr => {
+    const addressInfo = await apiClient.getAddressInfo(originalFromAddr)
+
+    const originalFromAddrCheck = verifyOriginalFromAddr(addressInfo)
+    if (originalFromAddrCheck.successful) {
+      askAddresses(originalFromAddr)
+    } else {
+      console.log(`${originalFromAddrCheck.message}. Please try another address to send from.`)
+      askFromAddress()
+    }
   })
 }
 
