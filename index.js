@@ -1,5 +1,5 @@
-const apiClient = require('./jobcoin/apiClient.js')
-const mixer = require('./jobcoin/mixer.js')
+const { makeTx, getAddressInfo } = require('./jobcoin/apiClient.js')
+const { mixAndDistribute } = require('./jobcoin/mixer.js')
 
 const {
   generateDepositAddress,
@@ -20,15 +20,15 @@ const despositMixDistribute = async (originalFromAddr, addresses, amount) => {
   const depositAddress = generateDepositAddress()
 
   // Send coin amount to deposit address
-  await apiClient.makeTx(originalFromAddr, depositAddress, amount)
+  await makeTx(originalFromAddr, depositAddress, amount)
 
   // Get coins from depost address, send to house
-  const addressInfo = await apiClient.getAddressInfo(depositAddress)
+  const addressInfo = await getAddressInfo(depositAddress)
   const addressBalance = addressInfo.balance
-  await apiClient.makeTx(depositAddress, HOUSE_ADDRESS, addressBalance)
+  await makeTx(depositAddress, HOUSE_ADDRESS, addressBalance)
 
   // Mix and distribute
-  await mixer.mixAndDistribute(addresses, addressBalance)
+  await mixAndDistribute(addresses, addressBalance)
 }
 
 const askCoinAmount = (addresses, originalFromAddr, addressInfo) => {
@@ -64,8 +64,8 @@ const askAddresses = async (originalFromAddr, addressInfo) => {
 
 const askFromAddress = () => {
   readline.question('Which account are you sending from? ', async originalFromAddr => {
-    const addressInfo = await apiClient.getAddressInfo(originalFromAddr)
-    
+    const addressInfo = await getAddressInfo(originalFromAddr)
+
     const originalFromAddrCheck = verifyOriginalFromAddr(addressInfo)
     if (originalFromAddrCheck.successful) {
       askAddresses(originalFromAddr, addressInfo)

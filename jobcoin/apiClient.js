@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 "use strict";
 const axios = require("axios");
-// const fetch = require('node-fetch')
 
 /* Urls */
 const API_BASE_URL = "http://jobcoin.gemini.com/jester-bless/api";

@@ -1,5 +1,4 @@
-const apiClient = require('./apiClient.js')
-
+const { makeTx } = require('./apiClient.js')
 const { HOUSE_ADDRESS } = require('./config.js')
 
 const createRandomAmounts = (amount, addressesArray) => {
@@ -63,9 +62,9 @@ const distribute = async (subAmounts, addressesArray) => {
     }
 
     await delay(randomTimeInterval)
-    
+
     console.log(`Transferring ${subAmount} coins to address ${toAddress}`)
-    apiClient.makeTx(HOUSE_ADDRESS, toAddress, subAmount)
+    makeTx(HOUSE_ADDRESS, toAddress, subAmount)
   }
 }
 
