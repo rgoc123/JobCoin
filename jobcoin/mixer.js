@@ -50,20 +50,17 @@ const distribute = (subAmounts, addressesArray) => {
     // Create random time anywhere between 1 and 6 seconds
     const randomTimeInterval = Math.floor(Math.random() * 5 + 1)
 
+    let toAddress
     if (idx < addressesArray.length) { // Make sure each addr gets one subAmount
-      const toAddress = addressesArray[idx]
-
-      // setTimeout(() => {
-      //   apiClient.makeTx('HOUSE', toAddress, subAmount)
-      // }, randomTimeInterval)
+      toAddress = addressesArray[idx]
     } else { // Once every addr has gotten a subAmount, randomly distribute
       const randomAddressIdx = Math.floor(Math.random() * addressesArray.length)
-      const toAddress = addressesArray[randomAddressIdx]
-
-      // setTimeout(() => {
-      //   apiClient.makeTx('HOUSE', toAddress, subAmount)
-      // }, randomTimeInterval)
+      toAddress = addressesArray[randomAddressIdx]
     }
+
+    // setTimeout(() => {
+    //   apiClient.makeTx('HOUSE', toAddress, subAmount)
+    // }, randomTimeInterval)
   }
 }
 
