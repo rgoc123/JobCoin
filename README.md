@@ -2,7 +2,7 @@
 ###### by Rob O'Connor
 
 ## Overview
-This is an example of a cryptocurrency coin mixer built with Node. The goal is to provide users the ability to anonymously transfer coins to accounts they can then withdraw from. The gist of this solution is that adding randomness creates anonymity. It implements a random order to transfers by creating randomly-sized (aka discrete) sub-amounts and then distributing them at random intervals for several layers of randomization.
+This is an example of a cryptocurrency coin mixer built with Node. The goal is to provide users the ability to anonymously transfer coins to accounts they can then withdraw from. The gist of this solution is that adding randomness creates anonymity. It implements a random order to transfers by creating small, randomly-sized (aka discrete) sub-amounts and then distributing them at random intervals for several layers of randomization.
 
 
 ## Install and Run
@@ -15,7 +15,7 @@ This is an example of a cryptocurrency coin mixer built with Node. The goal is t
 2. When that's done, in terminal start the program with `node index.js`
 3. Follow the prompts, making sure addresses you enter are separated by a comma, e.g. `'ro1,ro2,ro3'`
 
-Note: For the purposes of this exercise, you can enter what ever toAddresses you'd like. If you're not generating your own random 16-digit toAddresses for your transaction, someone would likely be able to tell which transactions were tied to your account. But since this is an exercise, using your own will make it easier to see how the order randomly appears on the frontend. If you were generating your own random 16-digit number it would be much more difficult to make connections between recipients and senders.
+Note: For the purposes of this exercise, you can enter what ever toAddresses you'd like. If you're not generating your own random 16-digit toAddresses for your transaction, someone would likely be able to tell which transactions were tied to your account. But since this is an exercise, using shorter, identifiable addresses will make it easier to see how the order randomly appears on the frontend. If you were generating your own random 16-digit number it would be much more difficult to make connections between recipients and senders.
 
 ### Run tests
 If you'd like to run the tests, simply make sure the program isn't running and then `npm run test`
@@ -44,7 +44,7 @@ This overall approach is based on the assumption that a real world app will have
 ### Specific Rationale
 
 #### Randomly-Sized Sub-Amounts
-I chose to create random subAmounts because the closer a received amount is to a previous transfer the easier it is to identify possible connections between a subAmount and its larger originator. This also allows for one transaction to make multiple deposits to recipients, which makes tracking even more confusing because it creates the appearance that multiple people are sending to a given address.
+I chose to create small, randomly sized subAmounts because the closer a received amount is to a previous transfer, especially large ones, the easier it is to identify possible connections between subAmounts and possible originators. If all transactions share this trait, then it further obscures the origin. This also allows for one transaction to make multiple deposits to each of its recipients, which makes tracking even more confusing because it creates the appearance that multiple people are sending to a given address.
 
 #### Random Timing
 I then chose to create random timing to further remove a deposit from its originator. If other transactions are happening in between it makes it more difficult to tie deposits to an originator based on succession and close timing.
@@ -56,5 +56,4 @@ I then chose to create random timing to further remove a deposit from its origin
 * Ability for users to generate random toAddresses
 * Add the ability for users to choose a level of anonymity/risk: by asking for slow transactions they may lose speed but gain anonymity, and vice-versa.
 * Add the ability for the user to run multiple transactions (to further increase the number of coins and transactions in the common pool, thus increasing randomness and providing more anonymity).
-* Improve the randomization of subAmounts by ensuring they're small.
 * Increased test coverage
