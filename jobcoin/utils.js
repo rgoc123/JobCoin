@@ -68,5 +68,5 @@ exports.createDummyTxs = async (names) => {
   const dummyAddressesTwo = [generateRandomAddress(), generateRandomAddress(), generateRandomAddress()].join()
 
   mixer.despositMixDistribute(namesArray[0], dummyAddressesOne, 37)
-  mixer.despositMixDistribute(namesArray[1], dummyAddressesTwo, 48)
+  mixer.despositMixDistribute(namesArray[1], dummyAddressesTwo, 21)
 }

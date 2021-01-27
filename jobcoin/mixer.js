@@ -8,7 +8,7 @@ const createRandomAmounts = (amount, addressesArray) => {
   let remainingAmount = amount
   const numAddresses = addressesArray.length
 
-  // Make intial slices of amount to send
+  // Make intial slices of amount to send and keep them small
   while (remainingAmount) {
     const upperLimit = remainingAmount < 5 ? remainingAmount : 5
 
@@ -18,7 +18,8 @@ const createRandomAmounts = (amount, addressesArray) => {
     remainingAmount -= subAmount
   }
 
-  // Create enough subAmounts for each recipient
+  // Create enough subAmounts for each recipient, for small transfers
+  // to multiple addresses
   if (subAmounts.length < numAddresses) {
     while (subAmounts.length < numAddresses) {
       for (let idx in subAmounts) {
@@ -48,8 +49,8 @@ const delay = (time) => {
 const distribute = async (subAmounts, addressesArray) => {
   for (let idx in subAmounts) {
     const subAmount = subAmounts[idx]
-    // Create random time anywhere between 1 and 10 seconds
-    const randomTimeInterval = Math.floor(Math.random() * 10 + 1)
+    // Create random time anywhere between 1 and 3 seconds for testing expediency
+    const randomTimeInterval = Math.floor(Math.random() * 3 + 1)
 
     let toAddress
     if (idx < addressesArray.length) { // Make sure each addr gets one subAmount

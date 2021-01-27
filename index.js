@@ -17,6 +17,8 @@ const readline = require('readline').createInterface({
 
 const askDummyNames = (originalFromAddr, addresses, amount) => {
   readline.question('Enter your two dummy names separated by a comma: ', async (dummyNames) => {
+    console.log('Transferring...')
+
     createDummyTxs(dummyNames)
 
     await despositMixDistribute(originalFromAddr, addresses, amount)
